@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NIW Artist Self-Assessment — Law Office of Hong‑Min Jun P.C.</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-neutral-50">
+  <div id="root"></div>
+
+  <script type="text/babel">
+  const BRAND = {
+    firm: { en: "Law Office of Hong‑Min Jun P.C.", ko: "Law Office of Hong‑Min Jun P.C." },
+    blue: "#003366",
+    blueHover: "#006699",
+  };
+
+  const T = {
+    en: {
+      title: "NIW Artist Self-Assessment",
+      subtitle: "Organize prongs and evidence collection in one streamlined flow",
+      export: "Export JSON",
+      reset: "Reset",
+      completion: "Completion",
+      prong: "Prong",
+      evidence: "Evidence checklist",
+      links: "Links / file paths",
+      related: "Related suggestions:",
+      prev: "← Previous",
+      next: "Next →",
+      // summaryBtn removed per requirement
+      suggested: "Suggested next items",
+      emptySuggest: "As you fill more, related questions will be suggested here.",
+      summaryTitle: "Summary & Strategy",
+      recommendations: "Recommendations",
+      noRecs: "No major recommendations based on current input. Please re-check the quality of evidence.",
+      steps: [
+        "Applicant Information",
+        "Prong 1: Substantial Merit",
+        "Prong 2: National Interest",
+        "Prong 3: Waiver",
+        "Additional Factors",
+        "Summary"
+      ],
+      consentLead: "Consent / 동의",
+      consentText: "By submitting this form, you agree that the results will be sent via email and acknowledge receipt from the Law Office of Hong‑min Jun.\n본 양식을 제출함으로써, 귀하는 결과물이 이메일로 송부되며, Law Office of Hong‑min Jun에서 발송되는 이메일을 수령함에 동의합니다.",
+      submit: "Submit",
+      add: "Add",
+      enterDetails: "Enter details",
+    },
+    ko: {
+      title: "NIW 예술가 자가진단",
+      subtitle: "요건과 증빙 수집을 하나의 흐름에서 정리합니다",
+      export: "JSON 내보내기",
+      reset: "초기화",
+      completion: "완료도",
+      prong: "요건",
+      evidence: "증빙 체크리스트",
+      links: "링크 / 파일 경로",
+      related: "연관 제안:",
+      prev: "← 이전",
+      next: "다음 →",
+      // summaryBtn removed per requirement
+      suggested: "다음으로 권장되는 항목",
+      emptySuggest: "입력이 늘어날수록 관련 문항을 제안합니다.",
+      summaryTitle: "요약 & 전략",
+      recommendations: "권고",
+      noRecs: "현재 입력 기준 큰 권고 없음. 증빙의 질을 다시 점검해 주세요.",
+      steps: [
+        "지원자 정보",
+        "요건 1: Substantial Merit",
+        "요건 2: National Interest",
+        "요건 3: Waiver",
+        "추가 요소",
+        "요약"
+      ],
+      consentLead: "동의",
+      consentText: "본 양식을 제출함으로써, 귀하는 결과물이 이메일로 송부되며, Law Office of Hong‑min Jun에서 발송되는 이메일을 수령함에 동의합니다.\nBy submitting this form, you agree that the results will be sent via email and acknowledge receipt from the Law Office of Hong‑min Jun.",
+      submit: "제출",
+      add: "추가",
+      enterDetails: "내용 입력",
+    }
+  };
+
+  const Q_DEF = {
+    en: {
+      A1: { title: "Applicant Name", prompt: "Enter applicant’s full legal name.", docs: [] },
+      A2: { title: "Email Address", prompt: "Enter applicant’s email address.", docs: [] },
+      A3: { title: "Major and Degree", prompt: "Enter applicant’s major and degree.", docs: [] },
+      Q1: { title: "Artistic Merit", prompt: "Describe recognitions that demonstrate artistic merit (exhibitions, juried reviews, awards).", docs: ["Exhibition records","Jury/critic reviews","Awards","Photos/Videos"] },
+      Q2: { title: "Public Contribution", prompt: "Explain positive impact on a community or an industry (projects, campaigns, public programs).", docs: ["Project proof","Letters of support/verification"] },
+      Q3: { title: "Originality", prompt: "Explain the originality of your technique/ideas. Include technical differentiators and examples.", docs: ["Work statements","Process documentation","Sketches/Prototypes"] },
+      Q4: { title: "Relevance to U.S. National Interests", prompt: "Describe how your work contributes to U.S. society/culture/economy/education with concrete examples.", docs: ["Activity records","Impact statement","Institution letters"] },
+      Q5: { title: "Cultural Diplomacy Value", prompt: "List overseas exhibitions, international exchanges, or joint projects with cross-border impact.", docs: ["International exhibition records","Exchange program docs"] },
+      Q6: { title: "Educational/Social Contribution", prompt: "Describe workshops/lectures/initiatives through which your practice fosters educational or social change.", docs: ["Teaching materials","Photos/Posters","Student/attendee feedback"] },
+      Q7: { title: "Not Easily Substitutable", prompt: "Why is your expertise difficult to replace (scarcity, specialization, outcomes)?", docs: ["Expert letters","Critiques/Reviews","Technique analysis"] },
+      Q8: { title: "Labor Market Impact", prompt: "Explain positive cultural/economic spillovers while not adversely affecting the U.S. labor market.", docs: ["Employer letters","Market/Labor data"] },
+      Q9: { title: "Uniqueness in the U.S.", prompt: "Substantiate how your style/work is rare or distinctive in the U.S. market.", docs: ["Critic opinions","Expert reviews"] },
+      Q10:{ title: "International Recognition", prompt: "List major international exhibitions/awards (biennales, fairs, global awards).", docs: ["International exhibitions","Award certificates"] },
+      Q11:{ title: "Collaborations", prompt: "Summarize collaborations with U.S. institutions/organizations and outcomes.", docs: ["Contracts/MOUs","Partner letters"] },
+      Q12:{ title: "Media Coverage", prompt: "Provide press/broadcast links and context.", docs: ["News articles","Broadcast captures"] },
+      Q13:{ title: "Recommendation Letters", prompt: "List recommenders and their credentials; attach letters.", docs: ["3+ letters","Recommenders’ CVs"] },
+    },
+    ko: {
+      A1: { title: "지원자 성명 (Applicant Name)", prompt: "지원자의 성명(법적 이름)을 입력하세요.", docs: [] },
+      A2: { title: "이메일 주소 (Email Address)", prompt: "지원자의 이메일 주소를 입력하세요.", docs: [] },
+      A3: { title: "전공 및 학위 (Major and Degree)", prompt: "지원자의 전공과 학위를 입력하세요.", docs: [] },
+      Q1: { title: "예술적 가치(Artistic Merit)", prompt: "전시, 심사평, 수상 등 예술적 가치 인정 내역을 기술하세요.", docs: ["전시 기록","심사평/평론","수상","사진/영상"] },
+      Q2: { title: "공공 기여도", prompt: "프로젝트·캠페인·공공 프로그램 등 지역사회/산업에 긍정적 영향 사례를 설명하세요.", docs: ["프로젝트 증빙","후원/검증 서신"] },
+      Q3: { title: "독창성", prompt: "기법/아이디어의 독창성과 기술적 차별점을 사례와 함께 설명하세요.", docs: ["작품 설명서","작업 과정 문서","스케치/프로토타입"] },
+      Q4: { title: "국익 연관성", prompt: "귀하의 활동이 미국 사회·문화·경제·교육에 기여하는 구체적 예시를 제시하세요.", docs: ["활동 실적","임팩트 서술","기관 확인서"] },
+      Q5: { title: "문화 외교적 가치", prompt: "해외 전시·국제 교류·합동 프로젝트 등 국경 간 임팩트 사례를 나열하세요.", docs: ["국제 전시 기록","교류 프로그램 자료"] },
+      Q6: { title: "교육·사회 기여", prompt: "워크숍·강의 등 교육/사회 변화를 촉진한 활동을 설명하세요.", docs: ["교육 자료","사진/포스터","피드백"] },
+      Q7: { title: "대체불가성", prompt: "귀하의 전문성이 왜 대체되기 어려운지 설명하세요(희소성, 전문성, 성과).", docs: ["전문가 추천서","평론/리뷰","기법 분석"] },
+      Q8: { title: "노동시장 영향", prompt: "미 노동시장에 부정적 영향을 주지 않으면서 문화/경제적 파급효과를 설명하세요.", docs: ["고용주 서신","시장/노동 데이터"] },
+      Q9: { title: "미국 내 고유성", prompt: "미국 시장에서 귀하의 스타일/작품이 드문 이유를 근거와 함께 제시하세요.", docs: ["평론가 의견","전문가 리뷰"] },
+      Q10:{ title: "국제적 인정", prompt: "비엔날레·페어·글로벌 어워드 등 주요 국제 전시/수상 경력을 정리하세요.", docs: ["국제 전시 기록","수상 증명서"] },
+      Q11:{ title: "협업 활동", prompt: "미국 내 기관/단체와의 협업 및 성과를 요약하세요.", docs: ["계약/합의서","파트너 추천서"] },
+      Q12:{ title: "언론 노출", prompt: "보도 자료/방송 링크와 맥락을 제공하세요.", docs: ["뉴스 기사","방송 캡처"] },
+      Q13:{ title: "추천서", prompt: "권위자의 추천서 보유 여부와 추천인의 이력/직위를 명시하세요.", docs: ["추천서 3부+","추천인 이력"] },
+    }
+  };
+
+  const QUESTIONS_ORDER = ["A1","A2","A3","Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9","Q10","Q11","Q12","Q13"];
+  const STEPS = [
+    { key: "AP", qids: ["A1","A2","A3"] },
+    { key: "P1", qids: ["Q1","Q2","Q3"] },
+    { key: "P2", qids: ["Q4","Q5","Q6"] },
+    { key: "P3", qids: ["Q7","Q8","Q9"] },
+    { key: "EX", qids: ["Q10","Q11","Q12","Q13"] },
+    { key: "SM", qids: [] }
+  ];
+
+  function App() {
+    const [lang, setLang] = React.useState("en");
+    const [answers, setAnswers] = React.useState(() => {
+      try { return JSON.parse(localStorage.getItem("niw_answers")||"{}"); } catch { return {}; }
+    });
+    const [activeStep, setActiveStep] = React.useState(0);
+    const L = T[lang];
+    const Q = Q_DEF[lang];
+
+    React.useEffect(() => { localStorage.setItem("niw_answers", JSON.stringify(answers)); }, [answers]);
+
+    const prongScore = React.useMemo(() => {
+      const map = { 1:0, 2:0, 3:0 };
+      Object.keys(Q).forEach((qid) => {
+        const pr = (qid==="Q1"||qid==="Q2"||qid==="Q3") ? 1 :
+                   (qid==="Q4"||qid==="Q5"||qid==="Q6") ? 2 :
+                   (qid==="Q7"||qid==="Q8"||qid==="Q9") ? 3 : 0;
+        const a = answers[qid];
+        const add = a?.strength==="Strong" ? 2 : a?.strength==="Medium" ? 1 : 0;
+        if (pr) map[pr]+=add;
+      });
+      return map;
+    }, [answers, lang]);
+
+    const completeness = React.useMemo(() => {
+      const total = Object.keys(Q).length;
+      const filled = Object.keys(Q).filter((qid) => {
+        const a = answers[qid];
+        return a?.text?.trim()?.length > 0 || (a?.docsChecked && Object.keys(a.docsChecked).length>0);
+      }).length;
+      return Math.round((filled/total)*100);
+    }, [answers, lang]);
+
+    function updateAnswer(id, patch) {
+      setAnswers((prev)=>({ ...prev, [id]: { ...(prev[id]||{}), ...patch } }));
+    }
+    function toggleDoc(id, d) {
+      const cur = answers[id]?.docsChecked || {};
+      const nv = { ...cur, [d]: !cur[d] };
+      if (!nv[d]) delete nv[d];
+      updateAnswer(id, { docsChecked: nv });
+    }
+    function addLink(id, value) {
+      const cur = answers[id]?.links || [];
+      const v = value?.trim();
+      if (!v) return;
+      updateAnswer(id, { links: [...cur, v] });
+    }
+    function removeLink(id, idx) {
+      const cur = answers[id]?.links || [];
+      const next = cur.filter((_, i)=>i!==idx);
+      updateAnswer(id, { links: next });
+    }
+    function exportJSON() {
+      const payload = { createdAt: new Date().toISOString(), lang, answers };
+      const blob = new Blob([JSON.stringify(payload,null,2)], { type:"application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "NIW_self_assessment.json"; a.click();
+      URL.revokeObjectURL(url);
+    }
+    function resetAll() {
+      if (confirm(lang==="ko"?"모든 입력을 초기화할까요?":"Reset all inputs?")) setAnswers({});
+    }
+
+    async function submitToFormspree() {
+      const btn = document.getElementById("submitEmailBtn"); // summary-only button id
+      const honeypot = document.getElementById("honeypot")?.value?.trim();
+      if (honeypot) {
+        alert(lang==="ko" ? "스팸 감지: 전송이 취소되었습니다." : "Spam detected: submission cancelled.");
+        return;
+      }
+      const email = (answers["A2"]?.text || "").trim();
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      if (!emailOk) {
+        alert(lang==="ko" ? "유효한 이메일 주소를 입력하세요." : "Please enter a valid email address.");
+        return;
+      }
+      const payload = {
+        createdAt: new Date().toISOString(),
+        lang,
+        applicant: {
+          name: answers["A1"]?.text || "",
+          email,
+          major_degree: answers["A3"]?.text || ""
+        },
+        answers
+      };
+      try {
+        if (btn) btn.disabled = true;
+        const res = await fetch("https://formspree.io/f/mjkoqgod", {
+          method: "POST",
+          headers: { "Accept": "application/json", "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          alert(lang==="ko" ? "제출 완료: 이메일로 전송되었습니다." : "Submitted: Sent to email inbox via Formspree.");
+        } else {
+          alert(lang==="ko" ? "전송 실패: 나중에 다시 시도하세요." : "Send failed: please try again later.");
+        }
+      } catch (_) {
+        alert(lang==="ko" ? "전송 실패: 나중에 다시 시도하세요." : "Send failed: please try again later.");
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    const RELATED = {
+      Q1:["Q2","Q5"], Q2:["Q4","Q6"], Q3:["Q5","Q7"], Q4:["Q7","Q11","Q12"], Q5:["Q8","Q10"],
+      Q6:["Q9","Q12"], Q7:["Q10"], Q8:["Q10"], Q9:["Q10"], Q10:["Q5","Q7"], Q11:["Q4","Q8"], Q12:["Q4","Q6"], Q13:["Q7","Q9"]
+    };
+    const recommendations = React.useMemo(() => {
+      const score = {};
+      QUESTIONS_ORDER.forEach((qid) => {
+        const a = answers[qid];
+        if (!a) return;
+        const base = a.strength==="Strong" ? 2 : a.strength==="Medium" ? 1 : 0;
+        (RELATED[qid]||[]).forEach((rid)=>{ score[rid]=(score[rid]||0)+base; });
+      });
+      return Object.keys(score).sort((a,b)=>score[b]-score[a]).slice(0,6);
+    }, [answers]);
+
+    const currentStep = STEPS[activeStep];
+
+    return (
+      <div className="min-h-screen bg-neutral-50">
+        {/* Honeypot */}
+        <input id="honeypot" name="company" type="text" className="hidden" />
+
+        {/* Header */}
+        <header className="sticky top-0 z-20 border-b bg-white/90 backdrop-blur">
+          <div className="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex flex-col leading-tight">
+                <div className="text-[18px] sm:text-[20px] font-extrabold tracking-tight text-[#0b4a8f]">LAW&nbsp;OFFICE&nbsp;OF&nbsp;HONG-MIN&nbsp;JUN</div>
+                <div className="text-[12px] sm:text-[13px] text-[#0b4a8f]/80">Attorney for Foreign-Born Individuals and Small Business Owners</div>
+              </div>
+              <div>
+                <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#003366]">{L.title}</h1>
+                <p className="text-sm text-neutral-600">{L.subtitle}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="inline-flex rounded-xl border border-[#003366]/40 overflow-hidden">
+                <button onClick={()=>setLang("en")} className={"px-3 py-2 text-sm "+(lang==="en"?"bg-[#003366] text-white":"hover:bg-neutral-100")} title="English">EN</button>
+                <button onClick={()=>setLang("ko")} className={"px-3 py-2 text-sm "+(lang==="ko"?"bg-[#003366] text-white":"hover:bg-neutral-100")} title="한국어">한글</button>
+              </div>
+              {/* Header "Submit via Email" button removed per requirement */}
+              <button onClick={exportJSON} className="rounded-xl border border-[#003366]/40 px-3 py-2 text-sm hover:bg-neutral-100">{L.export}</button>
+              <button onClick={resetAll} className="rounded-xl border border-[#003366]/40 px-3 py-2 text-sm hover:bg-neutral-100">{L.reset}</button>
+            </div>
+          </div>
+          {/* Progress */}
+          <div className="mx-auto max-w-6xl px-4 pb-3">
+            <div className="flex items-center justify-between text-xs text-neutral-600">
+              <div>{L.completion} {completeness}%</div>
+              <div className="flex gap-3">
+                <span>{(lang==="ko"?"요건":"Prong")}1: {prongScore[1]}</span>
+                <span>{(lang==="ko"?"요건":"Prong")}2: {prongScore[2]}</span>
+                <span>{(lang==="ko"?"요건":"Prong")}3: {prongScore[3]}</span>
+              </div>
+            </div>
+            <div className="h-2 w-full rounded-full bg-neutral-200 overflow-hidden">
+              <div className="h-full" style={{ backgroundColor: BRAND.blue, width: `${completeness}%` }} />
+            </div>
+          </div>
+        </header>
+
+        {/* Body */}
+        <main className="mx-auto max-w-6xl px-4 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Sidebar */}
+          <aside className="lg:col-span-3">
+            <div className="rounded-2xl border bg-white p-3 shadow-sm">
+              <nav className="space-y-1">
+                {STEPS.map((s, i)=>(
+                  <button key={s.key} onClick={()=>setActiveStep(i)} className={"w-full text-left rounded-xl px-3 py-2 text-sm hover:bg-neutral-50 "+(activeStep===i?"ring-2 ring-[#006699]/50":"")}>
+                    <div className="font-medium">{L.steps[i]}</div>
+                    {s.qids.length>0 && <div className="mt-1 text-xs text-neutral-500">{s.qids.length} {lang==="ko"?"문항":"questions"}</div>}
+                  </button>
+                ))}
+              </nav>
+              <div className="mt-4 border-top pt-3">
+                <div className="text-sm font-semibold">{L.suggested}</div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {/* Recommendation chips kept; content unchanged */}
+                  <span className="text-xs text-neutral-500">{L.emptySuggest}</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          {/* Content */}
+          <section className="lg:col-span-9 space-y-4">
+            {STEPS[activeStep].key !== "SM" ? (
+              STEPS[activeStep].qids.map((qid)=>{
+                const q = Q[qid];
+                const a = answers[qid] || {};
+                const pn = (qid==="Q1"||qid==="Q2"||qid==="Q3") ? 1 :
+                           (qid==="Q4"||qid==="Q5"||qid==="Q6") ? 2 :
+                           (qid==="Q7"||qid==="Q8"||qid==="Q9") ? 3 : null;
+
+                return (
+                  <article id={qid} key={qid} className="rounded-2xl border bg-white p-4 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold">{qid}: {q.title}</h3>
+                        <p className="text-sm text-neutral-600">{q.prompt}</p>
+                      </div>
+                      {pn && (
+                        <div className="text-xs text-neutral-600">{(lang==="ko"?"요건 ":"Prong ")+pn}</div>
+                      )}
+                    </div>
+
+                    {/* Strength (not for A1~A3) */}
+                    {pn && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {["Strong","Medium","Weak"].map((s)=>(
+                          <label key={s} className={"inline-flex items-center gap-2 rounded-xl border px-3 py-1.5 text-xs hover:bg-neutral-50 "+(a.strength===s?"ring-2 ring-[#006699]/50 border-[#003366]/40":"border-[#003366]/30")}>
+                            <input type="radio" className="accent-[#003366]" name={`str_${qid}`} checked={a.strength===s} onChange={()=>updateAnswer(qid,{strength:s})}/>
+                            <span>{s}</span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Text */}
+                    <div className="mt-3">
+                      <textarea
+                        className="w-full rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#006699]/50"
+                        rows={qid.startsWith("A")?2:4}
+                        value={a.text||""}
+                        onChange={(e)=>updateAnswer(qid,{ text:e.target.value })}
+                        placeholder={lang==="ko" ? T.ko.enterDetails : T.en.enterDetails}
+                      ></textarea>
+                    </div>
+
+                    {/* Docs Checklist (hide for A1~A3) */}
+                    {!!q.docs?.length && !qid.startsWith("A") && (
+                      <div className="mt-3">
+                        <div className="text-sm font-medium">{L.evidence}</div>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {q.docs.map((d)=>(
+                            <label key={d} className="inline-flex items-center gap-2 rounded-xl border border-[#003366]/30 px-3 py-1.5 text-xs hover:bg-neutral-50">
+                              <input type="checkbox" className="accent-[#003366]" checked={!!(a.docsChecked && a.docsChecked[d])} onChange={()=>toggleDoc(qid,d)} />
+                              <span>{d}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </article>
+                );
+              })
+            ) : (
+              <Summary answers={answers} lang={lang} onSubmit={submitToFormspree} />
+            )}
+
+            {/* Step controls: hide Next label change; hide entirely on Summary */}
+            {STEPS[activeStep].key !== "SM" && (
+              <div className="flex items-center justify-between pt-2">
+                <button disabled={activeStep===0} onClick={()=>setActiveStep((s)=>Math.max(0, s-1))} className="rounded-xl border border-[#003366]/40 px-4 py-2 text-sm disabled:opacity-40">{L.prev}</button>
+                <button onClick={()=>setActiveStep((s)=>Math.min(STEPS.length-1, s+1))} className="rounded-xl px-4 py-2 text-sm text-white" style={{ backgroundColor: BRAND.blue }} onMouseOver={(e)=> e.currentTarget.style.backgroundColor = BRAND.blueHover} onMouseOut={(e)=> e.currentTarget.style.backgroundColor = BRAND.blue}>
+                  {L.next}
+                </button>
+              </div>
+            )}
+          </section>
+        </main>
+
+        <footer className="mx-auto max-w-6xl px-4 pb-10 text-xs text-neutral-600">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <div className="font-semibold">Disclaimer</div>
+              <ul className="list-disc ml-4">
+                <li>This form and materials are for general information only and do not constitute legal advice.</li>
+                <li>Using this form does not create an attorney–client relationship. Specific matters require a formal consultation.</li>
+                <li>Past results do not guarantee future outcomes. Decisions rest with USCIS discretion.</li>
+              </ul>
+            </div>
+            <div>
+              <div className="font-semibold">저작권 · 무단 전재 금지</div>
+              <ul className="list-disc ml-4">
+                <li>ⓒ 2025 Law Office of Hong‑Min Jun P.C. All rights reserved.</li>
+                <li>본 자료의 무단 복제·배포·게시는 금지됩니다.</li>
+              </ul>
+            </div>
+          </div>
+        </footer>
+      </div>
+    );
+  }
+
+  function Summary({ answers, lang, onSubmit }) {
+    const L = T[lang];
+    const prongs = [
+      { n: 1, label: L.steps[1], ids: ["Q1","Q2","Q3"] },
+      { n: 2, label: L.steps[2], ids: ["Q4","Q5","Q6"] },
+      { n: 3, label: L.steps[3], ids: ["Q7","Q8","Q9"] },
+    ];
+
+    function prongStrength(n) {
+      const ids = prongs.find((p)=>p.n===n)?.ids || [];
+      const s = ids.reduce((acc, id)=>acc + (answers[id]?.strength==="Strong"?2 : answers[id]?.strength==="Medium"?1 : 0), 0);
+      if (s>=5) return { label: "Strong", className: "bg-emerald-600" };
+      if (s>=3) return { label: "Medium", className: "bg-amber-500" };
+      return { label: lang==="ko"?"보완 필요":"Needs work", className: "bg-rose-500" };
+    }
+
+    const Consent = (
+      <div className="rounded-xl border border-[#003366]/30 bg-white p-4">
+        <div className="text-sm font-semibold mb-2">{L.consentLead}</div>
+        <p className="whitespace-pre-line font-semibold text-[13px] leading-relaxed">{L.consentText}</p>
+      </div>
+    );
+
+    return (
+      <article className="rounded-2xl border bg-white p-4 shadow-sm space-y-4">
+        <h3 className="text-lg font-semibold">{L.summaryTitle}</h3>
+        <div className="rounded-2xl border p-3">
+          <div className="text-sm font-medium mb-2">{T[lang].steps[0]}</div>
+          <ul className="text-sm space-y-1">
+            <li><strong>A1</strong>: {answers["A1"]?.text || (lang==="ko"?"미입력":"Not provided")}</li>
+            <li><strong>A2</strong>: {answers["A2"]?.text || (lang==="ko"?"미입력":"Not provided")}</li>
+            <li><strong>A3</strong>: {answers["A3"]?.text || (lang==="ko"?"미입력":"Not provided")}</li>
+          </ul>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {prongs.map((p)=>{
+            const s = prongStrength(p.n);
+            return (
+              <div key={p.n} className="rounded-2xl border p-3">
+                <div className="text-sm font-medium">{p.label}</div>
+                <div className={"mt-2 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs text-white "+s.className}>{s.label}</div>
+                <ul className="mt-3 space-y-1 text-sm list-disc list-inside">
+                  {p.ids.map((id)=>(
+                    <li key={id}>{id}: {answers[id]?.strength || (lang==="ko"?"미평가":"Unrated")}</li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
+
+        {Consent}
+
+        {/* ONLY ONE BUTTON on Summary: "Submit" (Submit via Email removed) */}
+        <div className="flex items-center justify-end gap-2">
+          <button id="submitEmailBtn" onClick={onSubmit} className="rounded-xl px-4 py-2 text-sm text-white" style={{ backgroundColor: "#003366" }} onMouseOver={(e)=> e.currentTarget.style.backgroundColor = "#006699"} onMouseOut={(e)=> e.currentTarget.style.backgroundColor = "#003366"}>
+            {L.submit}
+          </button>
+        </div>
+      </article>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
